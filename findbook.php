@@ -33,7 +33,11 @@ if(!function_exists('filter')){
         if(isset($_GET["id"]) && !empty($_GET["id"])){
             $stu = preg_replace('/[^0-9]/', '', $_GET['id'] );
             $stu2 = mysqli_real_escape_string($link,$_GET['id']);
-        $sql = "SELECT * FROM `book` WHERE `number` = '$stu' OR `name` LIKE '%$stu2%'";
+			if($stu != '')$sql = "SELECT * FROM `book` WHERE `number` LIKE '% $stu %' OR `name` LIKE '%$stu2%'";
+			else{
+				$sql = "SELECT * FROM `book` WHERE `name` LIKE '%$stu2%'";
+			}
+	
         $result = mysqli_query($link, $sql);
         $status = 2;
         
@@ -72,10 +76,22 @@ if(!function_exists('filter')){
             <div class="collapse navbar-collapse justify-content-between">
                 <div class="header-left">
                     <div class="dashboard_bar">
-                        Foydalanuvchi menyusi
+                        Axborot resurs markazi
                     </div>
                 </div>
+                <ul class="navbar-nav header-right">
+                            
+                            <li class="nav-item dropdown header-profile">
+                                <a class="nav-link" href="login.php" role="button">
+                                    <img src="images/1.png" width="20" alt=""/>
+                                    <div class="header-info">
+                                        <span>Kirish</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
             </div>
+
         </nav>
     </div>
 </div>

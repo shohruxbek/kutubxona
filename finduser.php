@@ -45,9 +45,20 @@
             <div class="collapse navbar-collapse justify-content-between">
                 <div class="header-left">
                     <div class="dashboard_bar">
-                        Foydalanuvchi menyusi
+                        Axborot resurs markazi
                     </div>
                 </div>
+                <ul class="navbar-nav header-right">
+                            
+                            <li class="nav-item dropdown header-profile">
+                                <a class="nav-link" href="login.php" role="button">
+                                    <img src="images/1.png" width="20" alt=""/>
+                                    <div class="header-info">
+                                        <span>Kirish</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
             </div>
         </nav>
     </div>
@@ -134,10 +145,10 @@ if($result){
         echo "<td>".$rowq['direction']."</td>";
         echo "<td>".$rowq['groups']."</td>";
     
-        $sql3 = "SELECT * FROM `book` WHERE `number` =".$row['book_id'];
+        $sql3 = "SELECT * FROM `book` WHERE `number` LIKE '% ".$row['book_id']." %' LIMIT 1";
         $result3 = mysqli_query($link, $sql3);
         $roww = mysqli_fetch_assoc($result3);
-        echo "<td>".$roww['number']."</td>";
+        echo "<td>".$row['book_id']."</td>";
         echo "<td>".$roww['name']."</td>";
     
         echo "<td>".$row['bookdate']."</td>";

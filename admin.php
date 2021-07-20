@@ -1,7 +1,9 @@
 <?php
+        include_once 'session.php';
         include 'tepa.php';
         include 'header.php';
-        require_once "config.php";
+        include 'menu.php';
+require_once "config.php";
 
         $sqlc = "SELECT * FROM `book`";
       $resultc = mysqli_query($link, $sqlc);
@@ -11,6 +13,7 @@ $gettotal=0;
 $total+=(int)$rowc['total'];
 $gettotal+=(int)$rowc['gettotal'];
        }
+
          $sql = "SELECT COUNT(id) FROM student";
       $result = mysqli_query($link, $sql);
 $totalstudent=0;
@@ -18,83 +21,16 @@ $row = mysqli_fetch_assoc($result);
 $totalstudent+=$row['COUNT(id)'];
 
         ?>
-     
-
-<!--**********************************
-    Nav header start
-***********************************-->
-<div class="nav-header">
-    <a href="index.php" class="brand-logo">
-        <img class="logo-abbr" src="./images/logo.png" alt="">
-        <img class="logo-compact" src="./images/logo-text.png" alt="">
-        <img class="brand-title" src="./images/logo-text.png" alt="">
-    </a>
-
-    <div class="nav-control">
-        <div class="hamburger">
-            <span class="line"></span><span class="line"></span><span class="line"></span>
-        </div>
-    </div>
-</div>
-
-
-<div class="header">
-            <div class="header-content">
-                <nav class="navbar navbar-expand">
-                    <div class="collapse navbar-collapse justify-content-between">
-                        <div class="header-left">
-                            <div class="dashboard_bar">
-                                Axborot resurs markazi
-                            </div>
-                        </div>
-
-                        <ul class="navbar-nav header-right">
-                            
-                            <li class="nav-item dropdown header-profile">
-                                <a class="nav-link" href="login.php" role="button">
-                                    <img src="images/1.png" width="20" alt=""/>
-									<div class="header-info">
-										<span>Kirish</span>
-									</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-
-<div class="deznav">
-            <div class="deznav-scroll">
-                <ul class="metismenu" id="menu">
-                    <li><a href="finduser.php" class="ai-icon" aria-expanded="false">
-							<i class="flaticon-381-notepad"></i>
-							<span class="nav-text">Qarzdorlikni tekshirish</span>
-						</a>
-					</li>
-                </ul>
-                 <ul class="metismenu" id="menu">
-                    <li><a href="findbook.php" class="ai-icon" aria-expanded="false">
-							<i class="flaticon-381-layer-1"></i>
-							<span class="nav-text">Kitob qidirish</span>
-						</a>
-					</li>
-                </ul>
-			</div>
-        </div>
-
+		
         <div class="content-body">
+            <!-- row --> 
 			<div class="container-fluid">
 				<div class="form-head d-flex mb-3 mb-md-4 align-items-start">
 					<div class="mr-auto d-none d-lg-block">
-						<h3 class="text-black font-w600"><strong>Hurmatli talabalar...</strong></h3>
-						<p class="mb-0 fs-18">SAMARQAND IQTISODIYOT VA SERVIS INSTITUTI Axborot resurs markazida bor kitoblarni hamda Axborot resurs markazidan olgan kitoblaringiz haqida malumot olishingiz mumkin
-                   </p>
+						<h3 class="text-black font-w600"></h3>
+						<p class="mb-0 fs-18">Axborot resurs markazi</p>
 					</div>
-					
-					
 				</div>
-				
 				<div class="row">
 					<div class="col-xl-3 col-xxl-6 col-sm-6">
 						<div class="card gradient-bx text-white bg-danger rounded">	

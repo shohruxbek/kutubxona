@@ -1,5 +1,5 @@
 <?php
-// Include config file
+include_once 'session.php';
 require_once "config.php";
 require_once "helpers.php";
 
@@ -25,7 +25,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $student_id = trim($_POST["student_id"]);
 		$book_id = trim($_POST["book_id"]);
 		$bookdate = date('Y-m-d H:i:s');
-		$total = trim($_POST["total"]);
+		$total = 1;
 		$issue_date = trim($_POST["issue_date"]);
 		$return_date = trim($_POST["return_date"]);
 		
@@ -63,22 +63,40 @@ $totals = $rowq5['total']+$total;
 
 if($stmt->execute([$totals, $rowq5['id']])) {
     $stmt = null;
-    $sqdl3 = "SELECT * FROM `book` WHERE `number`=$output LIMIT 1";
+    $output = trim($output);
+    $sqdl3 = "SELECT * FROM `book` WHERE `number` LIKE '% ".$output." %' LIMIT 1";
 $resultd3 = mysqli_query($link, $sqdl3);
 $rowq3 = mysqli_fetch_assoc($resultd3);
 if($rowq3!=null){
-    $sqlr = "UPDATE book SET total=?, gettotal=? WHERE number =?";
+    $sqlr = "UPDATE book SET total=?, gettotal=? WHERE id=?";
     $stmt= $pdo->prepare($sqlr);
     $totalsa = $rowq3['total']-$total;
     $totalsb = $rowq3['gettotal']+$total;
-    $stmt->execute([$totalsa, $totalsb, $output]);
-}
-    $alert =  '<div class="alert alert-secondary alert-dismissible fade show">
+    $idf = $rowq3['id'];
+    if($stmt->execute([$totalsa, $totalsb, $idf])){
+$alert =  '<div class="alert alert-secondary alert-dismissible fade show">
     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
     <strong>Band qilindi!</strong> Kitob talaba uchun band qilindi.
     <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span>
     </button>
 </div>';
+    }else{
+$alert =  '<div class="alert alert-danger alert-dismissible fade show">
+    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+    <strong>Xatolik!</strong> Kitob ma\'lumotlari saqlanmadi
+    <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span>
+    </button>
+</div>';
+    }
+}else{
+    $alert =  '<div class="alert alert-danger alert-dismissible fade show">
+    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+    <strong>Xatolik!</strong> Kitob topilmadi.
+    <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close"><span><i class="mdi mdi-close"></i></span>
+    </button>
+</div>';
+}
+    
 } else{
     $alert =  '<div class="alert alert-danger alert-dismissible fade show">
     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
@@ -95,15 +113,16 @@ if($rowq3!=null){
 
         if($stmt->execute([ $student_id,$book_id,$bookdate,$total,$issue_date,$return_date  ])) {
                 $stmt = null;
-                $sqdl3 = "SELECT * FROM `book` WHERE `number`=$output LIMIT 1";
+                $sqdl3 = "SELECT * FROM `book` WHERE `number` LIKE '% $output %' LIMIT 1";
                 $resultd3 = mysqli_query($link, $sqdl3);
                 $rowq3 = mysqli_fetch_assoc($resultd3);
                 if($rowq3!=null){
-                    $sqlr = "UPDATE book SET total=?, gettotal=? WHERE number =?";
+                    $sqlr = "UPDATE book SET total=?, gettotal=? WHERE id =?";
                     $stmt= $pdo->prepare($sqlr);
                     $totalsa = $rowq3['total']-$total;
                     $totalsb = $rowq3['gettotal']+$total;
-                    $stmt->execute([$totalsa, $totalsb, $output]);
+                    $id = $rowq3['id'];
+                    $stmt->execute([$totalsa, $totalsb, $id]);
                 }
                 $alert =  '<div class="alert alert-secondary alert-dismissible fade show">
                 <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
@@ -144,8 +163,12 @@ if($rowq3!=null){
                 </div>
                 <!-- row -->
                 <div class="row">
-                    
-					<div class="col-xl-8 col-xxl-10">
+                    <div class="col-12">   
+                        <?php
+                        echo $alert;
+                    ?>
+                    </div>
+					<div class="col-12">
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Talabaga kitob berish</h4>
@@ -156,7 +179,7 @@ if($rowq3!=null){
                                         <div class="form-group row">
                                             <label class="col-sm-3 col-form-label">Talaba raqami</label>
                                             <div class="col-sm-3">
-                                                <input type="text" id="student_id" name="student_id" class="form-control" placeholder="Talaba raqami">
+                                                <input type="text" id="student_id" name="student_id" class="form-control" placeholder="Talaba raqami"  required>
                                             </div>
                                             <div class="col-sm-6">
                                                 <input type="text" id="student_id_result" name="student_id_result" class="form-control" placeholder="ismi" readonly>
@@ -165,29 +188,23 @@ if($rowq3!=null){
                                         <div class="form-group row">
                                             <label class="col-sm-3 col-form-label">Kitob raqami</label>
                                             <div class="col-sm-3">
-                                                <input type="text" id="book_id" name="book_id" class="form-control" placeholder="Kitob raqami">
+                                                <input type="text" id="book_id" name="book_id" class="form-control" placeholder="Kitob raqami"  required>
                                             </div>
                                             <div class="col-sm-6">
                                                 <input type="text" id="book_id_result" name="book_id_result" class="form-control" placeholder="ma'lumoti" readonly>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-sm-3 col-form-label">Soni</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" name="total" class="form-control" placeholder="Soni">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
                                             <label class="col-sm-3 col-form-label"> Olish sanasi</label>
                                             <div class="col-sm-9">
                                                 
-                                                <input name="issue_date" class="datepicker-default form-control" id="datepicker" placeholder="olish sanasi">
+                                                <input name="issue_date" class="datepicker-default form-control" id="datepicker" placeholder="olish sanasi" required>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-3 col-form-label"> Qaytarish sanasi</label>
                                             <div class="col-sm-9">
-                                            <input name="return_date" class="datepicker-default form-control" id="datepicker" placeholder="qaytarish sanasi">
+                                            <input name="return_date" class="datepicker-default form-control" id="datepicker" placeholder="qaytarish sanasi" required>
                                            
                                             </div>
                                         </div>
@@ -203,11 +220,7 @@ if($rowq3!=null){
                             </div>
                         </div>
 					</div>
-					<div class="col-xl-2 col-xxl-2 col-md-8">	
-                        <?php
-                        echo $alert;
-                    ?>
-					</div>
+					
                 </div>
             </div>
         </div>
@@ -241,7 +254,17 @@ $(function () {
         students: $('input[name="student_id"]').val(),
       },
       success: function(data) {
-        $('input[name="book_id_result"]').val(data).show();
+       var datas = JSON.parse(data);
+        $('input[name="book_id_result"]').val(datas.result).show();
+
+        if(datas.ok=="false"){
+            $('button[type="submit"]').prop('disabled', true);
+            $('button[type="submit"]').attr('class', 'btn btn-primary right no-drop');
+        }else{
+            $('button[type="submit"]').prop('disabled', false);
+            $('button[type="submit"]').attr('class', 'btn btn-primary right');
+        }
+        
       }
     });
   });
